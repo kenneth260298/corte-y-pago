@@ -1,0 +1,20 @@
+services:
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+  api:
+    build: ../corteypago-api
+    environment:
+      CORS_ORIGINS: https://app.kennethlopezporras.com,http://localhost:5173
+      JAVA_TOOL_OPTIONS: -Xmx512m
+    restart: unless-stopped
+
+volumes:
+  caddy-data:
+  caddy-config:
