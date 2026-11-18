@@ -1,6 +1,13 @@
 spring:
   application:
     name: corteypago-api
+  jpa:
+    hibernate:
+      ddl-auto: validate          # el esquema lo maneja Flyway, no Hibernate
+    open-in-view: false
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true   # rechaza campos que no existen, como "cardNumber"
 
 server:
   port: 8080
