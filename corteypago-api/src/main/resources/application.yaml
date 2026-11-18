@@ -3,12 +3,10 @@ spring:
     name: corteypago-api
   jpa:
     hibernate:
-      ddl-auto: validate          # el esquema lo maneja Flyway, no Hibernate
-    open-in-view: false
+      ddl-auto: validate          # schema is managed by Flyway, not Hibernate    open-in-view: false
   jackson:
     deserialization:
-      fail-on-unknown-properties: true   # rechaza campos que no existen, como "cardNumber"
-
+      fail-on-unknown-properties: true   # reject unknown fields such as "cardNumber"
 server:
   port: 8080
   forward-headers-strategy: framework
