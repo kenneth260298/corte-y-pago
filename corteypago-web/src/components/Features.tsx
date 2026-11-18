@@ -1,13 +1,21 @@
-import { features, sectionIds } from '../content'
+import { sections } from '../content'
+import { useLocale } from '../i18n/context'
 import { Section } from './Section'
 
 export function Features() {
+  const { features } = useLocale().t
+
   return (
-    <Section id={sectionIds.features} index={features.index} title={features.title} intro={features.intro}>
+    <Section
+      id={sections.features.id}
+      index={sections.features.index}
+      title={features.title}
+      intro={features.intro}
+    >
       <ul className="border-b border-slate-200">
         {features.items.map(({ icon: Icon, title, description }, i) => (
           <li
-            key={title}
+            key={i}
             className="grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-2 border-t border-slate-200 py-7 md:grid-cols-[3rem_minmax(0,20rem)_1fr_auto] md:items-baseline md:gap-x-8"
           >
             <span className="font-mono text-sm text-slate-600">{String(i + 1).padStart(2, '0')}</span>

@@ -1,7 +1,9 @@
-import { preview } from '../content'
+import { previewCycle } from '../content'
+import { useLocale } from '../i18n/context'
 
 function CycleBar() {
-  const { cycleDays, graceDays, daysAfterCut, startLabel, cutLabel, dueLabel, todayLabel } = preview.cycle
+  const { preview } = useLocale().t
+  const { cycleDays, graceDays, daysAfterCut } = previewCycle
   const total = cycleDays + graceDays
   const cyclePct = (cycleDays / total) * 100
   const todayPct = ((cycleDays + daysAfterCut) / total) * 100
@@ -21,21 +23,24 @@ function CycleBar() {
           className="absolute -top-7 -translate-x-1/2 rounded bg-brand-900 px-1.5 py-0.5 font-mono text-[11px] font-medium text-white"
           style={{ left: `${todayPct}%` }}
         >
-          {todayLabel}
+          {preview.todayLabel}
         </span>
       </div>
       <div className="relative mt-2 h-4 font-mono text-[11px] text-slate-600">
-        <span className="absolute left-0">{startLabel}</span>
+        <span className="absolute left-0">{preview.startLabel}</span>
         <span className="absolute hidden -translate-x-full pr-2 sm:block" style={{ left: `${cyclePct}%` }}>
-          {cutLabel}
+          {preview.cutLabel}
         </span>
-        <span className="absolute right-0">{dueLabel}</span>
+        <span className="absolute right-0">{preview.dueLabel}</span>
       </div>
     </div>
   )
 }
 
 export function StatementPreview() {
+  const { preview } = useLocale().t
+  const { cardLast4 } = previewCycle
+
   return (
     <figure className="relative mx-auto w-full max-w-md lg:max-w-none">
       {/* Physical card, purely decorative */}
@@ -45,15 +50,15 @@ export function StatementPreview() {
       >
         <div className="flex items-center justify-between">
           <span className="h-6 w-8 rounded-md bg-accent-400" />
-          <span className="font-mono text-[11px] uppercase tracking-widest text-brand-100">Crédito</span>
+          <span className="font-mono text-[11px] uppercase tracking-widest text-brand-100">{preview.cardBadge}</span>
         </div>
-        <span className="font-mono text-base tracking-[0.2em] text-white">···· {preview.cardLast4}</span>
+        <span className="font-mono text-base tracking-[0.2em] text-white">···· {cardLast4}</span>
       </div>
 
       <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl shadow-brand-900/10 sm:mt-14 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-brand-900">
-            {preview.cardName} <span className="font-mono font-normal text-slate-600">···· {preview.cardLast4}</span>
+            {preview.cardName} <span className="font-mono font-normal text-slate-600">···· {cardLast4}</span>
           </p>
           <span className="rounded-md bg-accent-50 px-2 py-1 font-mono text-[11px] font-medium text-accent-800">
             {preview.daysLeft}

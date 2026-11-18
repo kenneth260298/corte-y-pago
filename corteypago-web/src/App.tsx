@@ -6,12 +6,14 @@ import { Hero } from './components/Hero'
 import { HowItWorks } from './components/HowItWorks'
 import { Security } from './components/Security'
 import { TechStack } from './components/TechStack'
+import { mainContentId } from './content'
+import { LocaleProvider } from './i18n/LocaleProvider'
 
 function App() {
   return (
-    <>
+    <LocaleProvider>
       <Header />
-      <main id="contenido" tabIndex={-1} className="focus:outline-none">
+      <main id={mainContentId} tabIndex={-1} className="focus:outline-none">
         <Hero />
         <HowItWorks />
         <Features />
@@ -20,7 +22,7 @@ function App() {
         <ApiStatus />
       </main>
       <Footer />
-    </>
+    </LocaleProvider>
   )
 }
 

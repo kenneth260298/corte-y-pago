@@ -1,6 +1,7 @@
 import { LoaderCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { apiStatus, sectionIds } from '../content'
+import { apiEndpoint, sections } from '../content'
+import { useLocale } from '../i18n/context'
 import { Section } from './Section'
 
 const REQUEST_TIMEOUT_MS = 8000
@@ -10,10 +11,13 @@ interface HelloResponse {
   timestamp: string
 }
 
+// Reasons are keys, not text, so the message follows the selected language.
+type OfflineReason = 'missingUrl' | 'requestFailed'
+
 type Status =
   | { state: 'loading' }
   | { state: 'online'; data: HelloResponse; latencyMs: number }
-  | { state: 'offline'; reason: string }
+  | { state: 'offline'; reason: OfflineReason }
 
 function isHelloResponse(value: unknown): value is HelloResponse {
   if (typeof value !== 'object' || value === null) return false
@@ -26,19 +30,16 @@ function getApiBaseUrl(): string | null {
   return url ? url.replace(/\/+$/, '') : null
 }
 
-function formatTimestamp(timestamp: string): string {
+function formatTimestamp(timestamp: string, locale: string): string {
   const date = new Date(timestamp)
   if (Number.isNaN(date.getTime())) return timestamp
-  return new Intl.DateTimeFormat(apiStatus.timeLocale, {
-    dateStyle: 'medium',
-    timeStyle: 'medium',
-  }).format(date)
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(date)
 }
 
 function useApiStatus(): Status {
   const baseUrl = getApiBaseUrl()
   const [status, setStatus] = useState<Status>(() =>
-    baseUrl ? { state: 'loading' } : { state: 'offline', reason: apiStatus.missingUrl },
+    baseUrl ? { state: 'loading' } : { state: 'offline', reason: 'missingUrl' },
   )
 
   useEffect(() => {
@@ -61,7 +62,7 @@ function useApiStatus(): Status {
         if (active) setStatus({ state: 'online', data: body, latencyMs })
       })
       .catch(() => {
-        if (active) setStatus({ state: 'offline', reason: apiStatus.requestFailed })
+        if (active) setStatus({ state: 'offline', reason: 'requestFailed' })
       })
       .finally(() => window.clearTimeout(timeoutId))
 
@@ -87,12 +88,13 @@ function StatusDot({ online }: { online: boolean }) {
 }
 
 export function ApiStatus() {
+  const { apiStatus } = useLocale().t
   const status = useApiStatus()
 
   return (
     <Section
-      id={sectionIds.apiStatus}
-      index={apiStatus.index}
+      id={sections.apiStatus.id}
+      index={sections.apiStatus.index}
       title={apiStatus.title}
       intro={apiStatus.intro}
       tone="tinted"
@@ -112,7 +114,7 @@ export function ApiStatus() {
             </span>
           </div>
           <code className="self-start rounded-md bg-slate-100 px-2.5 py-1 font-mono text-sm text-slate-700 sm:self-auto">
-            {apiStatus.endpoint}
+            {apiEndpoint}
           </code>
         </div>
 
@@ -125,7 +127,9 @@ export function ApiStatus() {
             <div className="px-6 py-4 sm:px-8">
               <dt className="text-xs uppercase tracking-wider text-slate-600">{apiStatus.timestampLabel}</dt>
               <dd className="mt-1 text-lg font-semibold text-brand-900 tabular-nums">
-                <time dateTime={status.data.timestamp}>{formatTimestamp(status.data.timestamp)}</time>
+                <time dateTime={status.data.timestamp}>
+                  {formatTimestamp(status.data.timestamp, apiStatus.timeLocale)}
+                </time>
               </dd>
             </div>
             <div className="border-t border-slate-200 bg-slate-50 px-6 py-4 text-slate-700 sm:col-span-2 sm:px-8">
@@ -140,7 +144,7 @@ export function ApiStatus() {
 
         {status.state === 'offline' && (
           <p className="border-t border-slate-200 bg-slate-50 px-6 py-4 font-mono text-sm text-slate-700 sm:px-8">
-            {status.reason}
+            {apiStatus[status.reason]}
           </p>
         )}
       </div>

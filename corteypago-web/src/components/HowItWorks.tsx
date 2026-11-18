@@ -1,23 +1,28 @@
-import { howItWorks, sectionIds } from '../content'
+import { sections } from '../content'
+import { useLocale } from '../i18n/context'
 import { Section } from './Section'
 
 export function HowItWorks() {
+  const { howItWorks } = useLocale().t
+
   return (
     <Section
-      id={sectionIds.howItWorks}
-      index={howItWorks.index}
+      id={sections.howItWorks.id}
+      index={sections.howItWorks.index}
       title={howItWorks.title}
       intro={howItWorks.intro}
       tone="tinted"
     >
       <ol className="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 md:grid-cols-3">
         {howItWorks.steps.map(({ title, description, sample }, i) => (
-          <li key={title} className="flex flex-col bg-white p-6 sm:p-8">
+          <li key={i} className="flex flex-col bg-white p-6 sm:p-8">
             <span className="font-mono text-5xl font-semibold tracking-tighter text-brand-100" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
             <h3 className="mt-6 text-xl font-semibold tracking-tight text-brand-900">
-              <span className="sr-only">Paso {i + 1}: </span>
+              <span className="sr-only">
+                {howItWorks.stepLabel} {i + 1}:{' '}
+              </span>
               {title}
             </h3>
             <p className="mt-2 flex-1 text-slate-600">{description}</p>

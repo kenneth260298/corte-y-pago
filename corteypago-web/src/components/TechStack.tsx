@@ -1,9 +1,12 @@
-import { sectionIds, tech } from '../content'
+import { sections } from '../content'
+import { useLocale } from '../i18n/context'
 import { Section } from './Section'
 
 export function TechStack() {
+  const { tech } = useLocale().t
+
   return (
-    <Section id={sectionIds.tech} index={tech.index} title={tech.title} intro={tech.intro}>
+    <Section id={sections.tech.id} index={sections.tech.index} title={tech.title} intro={tech.intro}>
       <ul className="border-b border-slate-200">
         {tech.items.map(({ role, name, status }) => {
           const planned = status === 'planned'
@@ -15,9 +18,7 @@ export function TechStack() {
               <span className="col-span-2 font-mono text-xs uppercase tracking-wider text-slate-600 md:col-span-1">
                 {role}
               </span>
-              <span
-                className={`text-lg font-medium tracking-tight ${planned ? 'text-slate-600' : 'text-brand-900'}`}
-              >
+              <span className={`text-lg font-medium tracking-tight ${planned ? 'text-slate-600' : 'text-brand-900'}`}>
                 {name}
               </span>
               <span
