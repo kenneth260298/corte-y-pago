@@ -1,7 +1,12 @@
 spring:
   application:
     name: corteypago-api
-
+  jpa:
+    hibernate:
+      ddl-auto: validate          # schema is managed by Flyway, not Hibernate    open-in-view: false
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true   # reject unknown fields such as "cardNumber"
 server:
   port: 8080
   forward-headers-strategy: framework

@@ -1,0 +1,10 @@
+# Local development only. Production credentials live in a .env file that is never committed.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: corteypago
+      POSTGRES_USER: corteypago
+      POSTGRES_PASSWORD: corteypago
+    ports:
+      - "5432:5432"
